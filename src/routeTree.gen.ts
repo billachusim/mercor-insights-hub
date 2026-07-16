@@ -9,38 +9,129 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as ApiPublicCronWeeklyReportRouteImport } from './routes/api/public/cron/weekly-report'
+import { Route as ApiPublicCronIngestRouteImport } from './routes/api/public/cron/ingest'
+import { Route as ApiPublicCronDailyBriefRouteImport } from './routes/api/public/cron/daily-brief'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiPublicCronWeeklyReportRoute =
+  ApiPublicCronWeeklyReportRouteImport.update({
+    id: '/api/public/cron/weekly-report',
+    path: '/api/public/cron/weekly-report',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronIngestRoute = ApiPublicCronIngestRouteImport.update({
+  id: '/api/public/cron/ingest',
+  path: '/api/public/cron/ingest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronDailyBriefRoute = ApiPublicCronDailyBriefRouteImport.update({
+  id: '/api/public/cron/daily-brief',
+  path: '/api/public/cron/daily-brief',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/api/public/cron/daily-brief': typeof ApiPublicCronDailyBriefRoute
+  '/api/public/cron/ingest': typeof ApiPublicCronIngestRoute
+  '/api/public/cron/weekly-report': typeof ApiPublicCronWeeklyReportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/api/public/cron/daily-brief': typeof ApiPublicCronDailyBriefRoute
+  '/api/public/cron/ingest': typeof ApiPublicCronIngestRoute
+  '/api/public/cron/weekly-report': typeof ApiPublicCronWeeklyReportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/api/public/cron/daily-brief': typeof ApiPublicCronDailyBriefRoute
+  '/api/public/cron/ingest': typeof ApiPublicCronIngestRoute
+  '/api/public/cron/weekly-report': typeof ApiPublicCronWeeklyReportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/api/public/cron/daily-brief'
+    | '/api/public/cron/ingest'
+    | '/api/public/cron/weekly-report'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/api/public/cron/daily-brief'
+    | '/api/public/cron/ingest'
+    | '/api/public/cron/weekly-report'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/dashboard'
+    | '/api/public/cron/daily-brief'
+    | '/api/public/cron/ingest'
+    | '/api/public/cron/weekly-report'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ApiPublicCronDailyBriefRoute: typeof ApiPublicCronDailyBriefRoute
+  ApiPublicCronIngestRoute: typeof ApiPublicCronIngestRoute
+  ApiPublicCronWeeklyReportRoute: typeof ApiPublicCronWeeklyReportRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +139,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/cron/weekly-report': {
+      id: '/api/public/cron/weekly-report'
+      path: '/api/public/cron/weekly-report'
+      fullPath: '/api/public/cron/weekly-report'
+      preLoaderRoute: typeof ApiPublicCronWeeklyReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ingest': {
+      id: '/api/public/cron/ingest'
+      path: '/api/public/cron/ingest'
+      fullPath: '/api/public/cron/ingest'
+      preLoaderRoute: typeof ApiPublicCronIngestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/daily-brief': {
+      id: '/api/public/cron/daily-brief'
+      path: '/api/public/cron/daily-brief'
+      fullPath: '/api/public/cron/daily-brief'
+      preLoaderRoute: typeof ApiPublicCronDailyBriefRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ApiPublicCronDailyBriefRoute: ApiPublicCronDailyBriefRoute,
+  ApiPublicCronIngestRoute: ApiPublicCronIngestRoute,
+  ApiPublicCronWeeklyReportRoute: ApiPublicCronWeeklyReportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
