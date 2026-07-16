@@ -1,4 +1,7 @@
 import { createHash } from "node:crypto";
+import type { Database } from "@/integrations/supabase/types";
+
+type Json = Database["public"]["Tables"]["items"]["Insert"]["raw"];
 
 export type NewItem = {
   source_kind: string;
@@ -11,7 +14,7 @@ export type NewItem = {
   body: string | null;
   author: string | null;
   published_at: string;
-  raw: unknown;
+  raw: Json;
 };
 
 function hashUrl(url: string): string {
