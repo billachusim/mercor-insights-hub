@@ -77,28 +77,30 @@ export const askMercor = createServerFn({ method: "POST" })
     return { answer: text, sources };
   });
 
+import { getRequest } from "@tanstack/react-start/server";
+
+function originFrom(): string {
+  try {
+    const req = getRequest();
+    return new URL(req.url).origin;
+  } catch {
+    return "";
+  }
+}
+
 export const triggerIngest = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
-    const url = `${process.env.SUPABASE_URL?.replace(/\.supabase\.co.*/, "")}`; // unused
-    void url;
-    // Call our own public cron endpoint
-    const origin = process.env.APP_ORIGIN ?? "";
-    const target = origin ? `${origin}/api/public/cron/ingest` : "/api/public/cron/ingest";
-    try {
-      const res = await fetch(target, { method: "POST" });
-      const body = await res.json().catch(() => ({}));
-      return { ok: res.ok, body };
-    } catch (e) {
-      return { ok: false, error: String(e) };
-    }
+    const target = `${originFrom()}/api/public/cron/ingest`;
+    const res = await fetch(target, { method: "POST" });
+    const body = await res.json().catch(() => ({}));
+    return { ok: res.ok, body };
   });
 
 export const triggerDailyBrief = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
-    const origin = process.env.APP_ORIGIN ?? "";
-    const target = origin ? `${origin}/api/public/cron/daily-brief` : "/api/public/cron/daily-brief";
+    const target = `${originFrom()}/api/public/cron/daily-brief`;
     const res = await fetch(target, { method: "POST" });
     const body = await res.json().catch(() => ({}));
     return { ok: res.ok, body };
