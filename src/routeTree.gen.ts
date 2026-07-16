@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicCronWeeklyReportRouteImport } from './routes/api/public/cron/weekly-report'
 import { Route as ApiPublicCronIngestRouteImport } from './routes/api/public/cron/ingest'
 import { Route as ApiPublicCronDailyBriefRouteImport } from './routes/api/public/cron/daily-brief'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -38,12 +44,14 @@ const ApiPublicCronDailyBriefRoute = ApiPublicCronDailyBriefRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/api/public/cron/daily-brief': typeof ApiPublicCronDailyBriefRoute
   '/api/public/cron/ingest': typeof ApiPublicCronIngestRoute
   '/api/public/cron/weekly-report': typeof ApiPublicCronWeeklyReportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/api/public/cron/daily-brief': typeof ApiPublicCronDailyBriefRoute
   '/api/public/cron/ingest': typeof ApiPublicCronIngestRoute
   '/api/public/cron/weekly-report': typeof ApiPublicCronWeeklyReportRoute
@@ -51,6 +59,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/api/public/cron/daily-brief': typeof ApiPublicCronDailyBriefRoute
   '/api/public/cron/ingest': typeof ApiPublicCronIngestRoute
   '/api/public/cron/weekly-report': typeof ApiPublicCronWeeklyReportRoute
@@ -59,18 +68,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/api/public/cron/daily-brief'
     | '/api/public/cron/ingest'
     | '/api/public/cron/weekly-report'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/api/public/cron/daily-brief'
     | '/api/public/cron/ingest'
     | '/api/public/cron/weekly-report'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/api/public/cron/daily-brief'
     | '/api/public/cron/ingest'
     | '/api/public/cron/weekly-report'
@@ -78,6 +90,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   ApiPublicCronDailyBriefRoute: typeof ApiPublicCronDailyBriefRoute
   ApiPublicCronIngestRoute: typeof ApiPublicCronIngestRoute
   ApiPublicCronWeeklyReportRoute: typeof ApiPublicCronWeeklyReportRoute
@@ -85,6 +98,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -118,6 +138,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   ApiPublicCronDailyBriefRoute: ApiPublicCronDailyBriefRoute,
   ApiPublicCronIngestRoute: ApiPublicCronIngestRoute,
   ApiPublicCronWeeklyReportRoute: ApiPublicCronWeeklyReportRoute,
